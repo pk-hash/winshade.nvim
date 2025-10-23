@@ -113,7 +113,7 @@ M.apply_to_window = function(winid)
 	if vim.bo[bufnr].buftype == "terminal" then
 		local fade_amount = config.get("fade_amount")
 		local bg = get_background_color()
-		
+
 		-- Fade terminal color palette
 		for i = 0, 15 do
 			local color_var = "terminal_color_" .. i
