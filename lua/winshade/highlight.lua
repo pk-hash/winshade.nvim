@@ -121,6 +121,8 @@ end
 
 M.clear_window = function(winid)
 	if not vim.api.nvim_win_is_valid(winid) then
+		-- Clean up terminal match tracking for invalid windows
+		terminal_matches[winid] = nil
 		return
 	end
 
@@ -133,19 +135,35 @@ M.clear_window = function(winid)
 	end
 end
 
+local last_active_win = nil
+
 M.apply_to_inactive_windows = function()
+	local current_win = vim.api.nvim_get_current_win()
+	
+	-- Clear the previously active window
+	if last_active_win and last_active_win ~= current_win and vim.api.nvim_win_is_valid(last_active_win) then
+		M.apply_to_window(last_active_win)
+	end
+	
+	-- Clear the newly active window
+	M.clear_window(current_win)
+	
+	last_active_win = current_win
+end
+
+M.apply_to_all_inactive_windows = function()
 	local current_win = vim.api.nvim_get_current_win()
 	local wins = vim.api.nvim_list_wins()
 
 	for _, winid in ipairs(wins) do
-		if vim.api.nvim_win_is_valid(winid) then
-			if winid ~= current_win then
-				M.apply_to_window(winid)
-			else
-				M.clear_window(winid)
-			end
+		if winid ~= current_win then
+			M.apply_to_window(winid)
+		else
+			M.clear_window(winid)
 		end
 	end
+	
+	last_active_win = current_win
 end
 
 M.clear_all_windows = function()

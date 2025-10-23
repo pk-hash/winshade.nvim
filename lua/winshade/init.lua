@@ -13,7 +13,7 @@ end
 
 M.enable = function()
 	autocmd.enable()
-	highlight.apply_to_inactive_windows()
+	highlight.apply_to_all_inactive_windows()
 end
 
 M.disable = function()
