@@ -1,0 +1,110 @@
+*winshade.txt*  Fade inactive windows for better focus
+
+==============================================================================
+CONTENTS                                                    *winshade-contents*
+
+    1. Introduction ............................ |winshade-introduction|
+    2. Requirements ............................ |winshade-requirements|
+    3. Installation ............................ |winshade-installation|
+    4. Configuration ........................... |winshade-configuration|
+    5. Commands ................................ |winshade-commands|
+    6. API ..................................... |winshade-api|
+    7. License ................................. |winshade-license|
+
+==============================================================================
+INTRODUCTION                                            *winshade-introduction*
+
+Winshade automatically fades inactive windows in Neovim, helping you focus
+on the active window by reducing visual clutter.
+
+==============================================================================
+REQUIREMENTS                                            *winshade-requirements*
+
+- Neovim >= 0.8.0
+
+==============================================================================
+INSTALLATION                                            *winshade-installation*
+
+Using lazy.nvim: >
+    {
+      "yourusername/winshade",
+      config = function()
+        require("winshade").setup()
+      end,
+    }
+<
+
+==============================================================================
+CONFIGURATION                                          *winshade-configuration*
+
+Setup with default options: >
+    require("winshade").setup({
+      fade_amount = 0.3,
+      excluded_filetypes = {},
+      excluded_buftypes = {},
+      ignore_floating = true,
+    })
+<
+
+fade_amount                                          *winshade-fade_amount*
+    Type: number (0.0 to 1.0)
+    Default: 0.3
+    
+    Amount to fade inactive windows. Higher values mean more fading.
+
+excluded_filetypes                            *winshade-excluded_filetypes*
+    Type: table
+    Default: {}
+    
+    List of filetypes to exclude from shading.
+    Example: { "NvimTree", "neo-tree", "dashboard" }
+
+excluded_buftypes                              *winshade-excluded_buftypes*
+    Type: table
+    Default: {}
+    
+    List of buffer types to exclude from shading.
+    Example: { "terminal" }
+
+ignore_floating                                  *winshade-ignore_floating*
+    Type: boolean
+    Default: true
+    
+    If true, floating windows will not be shaded.
+
+==============================================================================
+COMMANDS                                                    *winshade-commands*
+
+:WinshadeEnable                                              *:WinshadeEnable*
+    Enable window shading.
+
+:WinshadeDisable                                            *:WinshadeDisable*
+    Disable window shading.
+
+:WinshadeToggle                                              *:WinshadeToggle*
+    Toggle window shading on/off.
+
+==============================================================================
+API                                                              *winshade-api*
+
+require("winshade").setup({opts})                            *winshade.setup()*
+    Initialize the plugin with configuration options.
+    
+    Parameters: ~
+        {opts} (table) Configuration options
+
+require("winshade").enable()                                *winshade.enable()*
+    Enable window shading.
+
+require("winshade").disable()                              *winshade.disable()*
+    Disable window shading.
+
+require("winshade").toggle()                                *winshade.toggle()*
+    Toggle window shading on/off.
+
+==============================================================================
+LICENSE                                                      *winshade-license*
+
+MIT License
+
+vim:tw=78:ts=8:ft=help:norl:
