@@ -5,6 +5,7 @@ local defaults = {
 	excluded_filetypes = {},
 	excluded_buftypes = {},
 	ignore_floating = true,
+	floating_zindex_threshold = 50,
 }
 
 M.options = {}
@@ -41,7 +42,8 @@ M.should_exclude_window = function(winid)
 	-- Check if floating window should be ignored
 	if M.options.ignore_floating then
 		local win_config = vim.api.nvim_win_get_config(winid)
-		if win_config.relative ~= "" and (win_config.zindex or 50) > 50 then
+		local threshold = M.options.floating_zindex_threshold
+		if win_config.relative ~= "" and (win_config.zindex or threshold) > threshold then
 			return true
 		end
 	end
