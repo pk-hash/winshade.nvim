@@ -14,10 +14,12 @@ M.enable = function()
 		augroup = vim.api.nvim_create_augroup("Winshade", { clear = true })
 	end
 
-	vim.api.nvim_create_autocmd({ "WinEnter", "BufWinEnter" }, {
+	vim.api.nvim_create_autocmd({ "WinEnter", "BufWinEnter", "FocusGained" }, {
 		group = augroup,
 		callback = function()
-			highlight.apply_to_inactive_windows()
+			vim.schedule(function()
+				highlight.apply_to_inactive_windows()
+			end)
 		end,
 	})
 
@@ -25,7 +27,9 @@ M.enable = function()
 		group = augroup,
 		callback = function()
 			highlight.setup()
-			highlight.apply_to_inactive_windows()
+			vim.schedule(function()
+				highlight.apply_to_inactive_windows()
+			end)
 		end,
 	})
 end

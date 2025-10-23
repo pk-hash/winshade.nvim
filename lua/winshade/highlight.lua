@@ -46,7 +46,7 @@ M.setup = function()
 	local bg = get_background_color()
 
 	local all_highlights = vim.api.nvim_get_hl(0, {})
-	
+
 	local excluded_highlights = {
 		"TabLineSel",
 		"Pmenu",
@@ -61,7 +61,11 @@ M.setup = function()
 	}
 
 	for hl_name, hl_def in pairs(all_highlights) do
-		if type(hl_name) == "string" and not hl_name:match("^winshade") and not vim.tbl_contains(excluded_highlights, hl_name) then
+		if
+			type(hl_name) == "string"
+			and not hl_name:match("^winshade")
+			and not vim.tbl_contains(excluded_highlights, hl_name)
+		then
 			local faded_hl = {}
 
 			if hl_def.fg then
@@ -94,6 +98,10 @@ M.setup = function()
 end
 
 M.apply_to_window = function(winid)
+	if not vim.api.nvim_win_is_valid(winid) then
+		return
+	end
+	
 	if config.should_exclude_window(winid) then
 		return
 	end
@@ -102,6 +110,10 @@ M.apply_to_window = function(winid)
 end
 
 M.clear_window = function(winid)
+	if not vim.api.nvim_win_is_valid(winid) then
+		return
+	end
+	
 	vim.api.nvim_win_set_hl_ns(winid, 0)
 end
 
@@ -110,10 +122,12 @@ M.apply_to_inactive_windows = function()
 	local wins = vim.api.nvim_list_wins()
 
 	for _, winid in ipairs(wins) do
-		if winid ~= current_win then
-			M.apply_to_window(winid)
-		else
-			M.clear_window(winid)
+		if vim.api.nvim_win_is_valid(winid) then
+			if winid ~= current_win then
+				M.apply_to_window(winid)
+			else
+				M.clear_window(winid)
+			end
 		end
 	end
 end
