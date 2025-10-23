@@ -41,7 +41,7 @@ M.should_exclude_window = function(winid)
 	-- Check if floating window should be ignored
 	if M.options.ignore_floating then
 		local win_config = vim.api.nvim_win_get_config(winid)
-		if win_config.relative ~= "" then
+		if win_config.relative ~= "" and (win_config.zindex or 50) > 50 then
 			return true
 		end
 	end
