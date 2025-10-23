@@ -14,7 +14,6 @@ end
 M.enable = function()
 	autocmd.enable()
 	highlight.apply_to_inactive_windows()
-	vim.notify("Winshade enabled", vim.log.levels.INFO)
 end
 
 M.disable = function()
