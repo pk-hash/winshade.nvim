@@ -3,6 +3,13 @@ if vim.g.loaded_winshade then
 end
 vim.g.loaded_winshade = true
 
+-- Auto-setup if user hasn't called setup manually
+vim.defer_fn(function()
+	if not package.loaded["winshade"] or not require("winshade.config").is_enabled() then
+		require("winshade").setup()
+	end
+end, 0)
+
 -- Create user commands
 vim.api.nvim_create_user_command("WinshadeEnable", function()
 	require("winshade").enable()

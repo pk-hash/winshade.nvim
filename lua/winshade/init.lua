@@ -5,7 +5,7 @@ local highlight = require("winshade.highlight")
 local autocmd = require("winshade.autocmd")
 
 M.setup = function(opts)
-	config.setup(opts)
+	config.setup(opts or {})
 	highlight.setup()
 	autocmd.setup()
 	M.enable()
