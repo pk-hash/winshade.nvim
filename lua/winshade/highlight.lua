@@ -46,9 +46,22 @@ M.setup = function()
 	local bg = get_background_color()
 
 	local all_highlights = vim.api.nvim_get_hl(0, {})
+	
+	local excluded_highlights = {
+		"TabLineSel",
+		"Pmenu",
+		"PmenuSel",
+		"PmenuKind",
+		"PmenuKindSel",
+		"PmenuExtra",
+		"PmenuExtraSel",
+		"PmenuSbar",
+		"PmenuThumb",
+		"StatusLine",
+	}
 
 	for hl_name, hl_def in pairs(all_highlights) do
-		if type(hl_name) == "string" and not hl_name:match("^winshade") then
+		if type(hl_name) == "string" and not hl_name:match("^winshade") and not vim.tbl_contains(excluded_highlights, hl_name) then
 			local faded_hl = {}
 
 			if hl_def.fg then
