@@ -49,27 +49,27 @@ Setup with default options: >
 fade_amount                                          *winshade-fade_amount*
     Type: number (0.0 to 1.0)
     Default: 0.3
-    
+
     Amount to fade inactive windows. Higher values mean more fading.
 
 excluded_filetypes                            *winshade-excluded_filetypes*
     Type: table
     Default: {}
-    
+
     List of filetypes to exclude from shading.
     Example: { "NvimTree", "neo-tree", "dashboard" }
 
 excluded_buftypes                              *winshade-excluded_buftypes*
     Type: table
     Default: {}
-    
+
     List of buffer types to exclude from shading.
     Example: { "terminal" }
 
 ignore_floating                                  *winshade-ignore_floating*
     Type: boolean
     Default: true
-    
+
     If true, floating windows will not be shaded.
 
 ==============================================================================
@@ -89,7 +89,7 @@ API                                                              *winshade-api*
 
 require("winshade").setup({opts})                            *winshade.setup()*
     Initialize the plugin with configuration options.
-    
+
     Parameters: ~
         {opts} (table) Configuration options
 
