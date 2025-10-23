@@ -101,7 +101,7 @@ M.apply_to_window = function(winid)
 	if not vim.api.nvim_win_is_valid(winid) then
 		return
 	end
-	
+
 	if config.should_exclude_window(winid) then
 		return
 	end
@@ -113,7 +113,7 @@ M.clear_window = function(winid)
 	if not vim.api.nvim_win_is_valid(winid) then
 		return
 	end
-	
+
 	vim.api.nvim_win_set_hl_ns(winid, 0)
 end
 
