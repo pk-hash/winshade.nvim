@@ -107,12 +107,25 @@ M.apply_to_window = function(winid)
 	end
 
 	vim.api.nvim_win_set_hl_ns(winid, ns_id)
-	
-	-- Apply to terminal windows
+
+	-- Apply to terminal windows by fading terminal colors
 	local bufnr = vim.api.nvim_win_get_buf(winid)
 	if vim.bo[bufnr].buftype == "terminal" then
 		local fade_amount = config.get("fade_amount")
-		vim.api.nvim_set_option_value("winblend", math.floor(fade_amount * 30), { win = winid })
+		local bg = get_background_color()
+		
+		-- Fade terminal color palette
+		for i = 0, 15 do
+			local color_var = "terminal_color_" .. i
+			local original_color = vim.g[color_var]
+			if original_color then
+				local color_num = tonumber(original_color:gsub("#", ""), 16)
+				if color_num then
+					local faded = blend_colors(color_num, bg, fade_amount)
+					vim.api.nvim_buf_set_var(bufnr, color_var, string.format("#%06x", faded))
+				end
+			end
+		end
 	end
 end
 
@@ -122,11 +135,14 @@ M.clear_window = function(winid)
 	end
 
 	vim.api.nvim_win_set_hl_ns(winid, 0)
-	
-	-- Clear terminal window blend
+
+	-- Clear terminal colors by removing buffer-local overrides
 	local bufnr = vim.api.nvim_win_get_buf(winid)
 	if vim.bo[bufnr].buftype == "terminal" then
-		vim.api.nvim_set_option_value("winblend", 0, { win = winid })
+		for i = 0, 15 do
+			local color_var = "terminal_color_" .. i
+			pcall(vim.api.nvim_buf_del_var, bufnr, color_var)
+		end
 	end
 end
 
