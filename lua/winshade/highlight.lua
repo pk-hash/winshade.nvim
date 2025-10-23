@@ -115,7 +115,7 @@ M.apply_to_window = function(winid)
 		local bg = get_background_color()
 
 		-- Fade terminal color palette
-		for i = 0, 15 do
+		for i = 0, 255 do
 			local color_var = "terminal_color_" .. i
 			local original_color = vim.g[color_var]
 			if original_color then
@@ -139,7 +139,7 @@ M.clear_window = function(winid)
 	-- Clear terminal colors by removing buffer-local overrides
 	local bufnr = vim.api.nvim_win_get_buf(winid)
 	if vim.bo[bufnr].buftype == "terminal" then
-		for i = 0, 15 do
+		for i = 0, 255 do
 			local color_var = "terminal_color_" .. i
 			pcall(vim.api.nvim_buf_del_var, bufnr, color_var)
 		end
