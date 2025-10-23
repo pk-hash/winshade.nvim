@@ -32,10 +32,11 @@ Default configuration:
 
 ```lua
 require("winshade").setup({
-  fade_amount = 0.3,          -- Amount to fade inactive windows (0.0 to 1.0)
-  excluded_filetypes = {},    -- Filetypes to exclude from shading
-  excluded_buftypes = {},     -- Buffer types to exclude from shading
-  ignore_floating = true,     -- Don't shade floating windows
+  fade_amount = 0.3,             -- Amount to fade inactive windows (0.0 to 1.0)
+  excluded_filetypes = {},       -- Filetypes to exclude from shading
+  excluded_buftypes = {},        -- Buffer types to exclude from shading
+  ignore_floating = true,        -- Don't shade floating windows
+  floating_zindex_threshold = 50, -- Exclude floating windows with z-index > this value
 })
 ```
 
