@@ -2,9 +2,82 @@ local M = {}
 
 local config = require("winshade.config")
 
+local ns_id = vim.api.nvim_create_namespace("winshade")
+
+local function blend_colors(fg, bg, alpha)
+	if not fg or not bg then
+		return bg
+	end
+
+	local fg_r = bit.rshift(bit.band(fg, 0xFF0000), 16)
+	local fg_g = bit.rshift(bit.band(fg, 0x00FF00), 8)
+	local fg_b = bit.band(fg, 0x0000FF)
+
+	local bg_r = bit.rshift(bit.band(bg, 0xFF0000), 16)
+	local bg_g = bit.rshift(bit.band(bg, 0x00FF00), 8)
+	local bg_b = bit.band(bg, 0x0000FF)
+
+	local r = math.floor(fg_r * (1 - alpha) + bg_r * alpha)
+	local g = math.floor(fg_g * (1 - alpha) + bg_g * alpha)
+	local b = math.floor(fg_b * (1 - alpha) + bg_b * alpha)
+
+	return bit.bor(bit.lshift(r, 16), bit.lshift(g, 8), b)
+end
+
+local function get_hl_value(hl_name, attr)
+	local hl = vim.api.nvim_get_hl(0, { name = hl_name })
+	return hl[attr]
+end
+
+local function get_background_color()
+	local bg = get_hl_value("Normal", "bg")
+	if not bg then
+		if vim.o.background == "dark" then
+			bg = 0x000000
+		else
+			bg = 0xFFFFFF
+		end
+	end
+	return bg
+end
+
 M.setup = function()
-	-- TODO: Create highlight groups based on fade_amount
-	-- Will need to blend Normal highlight with background
+	local fade_amount = config.get("fade_amount")
+	local bg = get_background_color()
+
+	local all_highlights = vim.api.nvim_get_hl(0, {})
+
+	for hl_name, hl_def in pairs(all_highlights) do
+		if type(hl_name) == "string" and not hl_name:match("^winshade") then
+			local faded_hl = {}
+
+			if hl_def.fg then
+				faded_hl.fg = blend_colors(hl_def.fg, bg, fade_amount)
+			end
+
+			if hl_def.bg then
+				faded_hl.bg = blend_colors(hl_def.bg, bg, fade_amount)
+			end
+
+			if hl_def.sp then
+				faded_hl.sp = blend_colors(hl_def.sp, bg, fade_amount)
+			end
+
+			for _, attr in ipairs({ "bold", "italic", "underline", "undercurl", "strikethrough", "reverse" }) do
+				if hl_def[attr] then
+					faded_hl[attr] = hl_def[attr]
+				end
+			end
+
+			if hl_def.link then
+				faded_hl.link = hl_def.link
+			end
+
+			if next(faded_hl) then
+				vim.api.nvim_set_hl(ns_id, hl_name, faded_hl)
+			end
+		end
+	end
 end
 
 M.apply_to_window = function(winid)
@@ -12,11 +85,11 @@ M.apply_to_window = function(winid)
 		return
 	end
 
-	-- TODO: Apply winhighlight to fade the window
+	vim.api.nvim_win_set_hl_ns(winid, ns_id)
 end
 
 M.clear_window = function(winid)
-	-- TODO: Remove winhighlight from window
+	vim.api.nvim_win_set_hl_ns(winid, 0)
 end
 
 M.apply_to_inactive_windows = function()
