@@ -107,6 +107,13 @@ M.apply_to_window = function(winid)
 	end
 
 	vim.api.nvim_win_set_hl_ns(winid, ns_id)
+	
+	-- Apply to terminal windows
+	local bufnr = vim.api.nvim_win_get_buf(winid)
+	if vim.bo[bufnr].buftype == "terminal" then
+		local fade_amount = config.get("fade_amount")
+		vim.api.nvim_set_option_value("winblend", math.floor(fade_amount * 30), { win = winid })
+	end
 end
 
 M.clear_window = function(winid)
@@ -115,6 +122,12 @@ M.clear_window = function(winid)
 	end
 
 	vim.api.nvim_win_set_hl_ns(winid, 0)
+	
+	-- Clear terminal window blend
+	local bufnr = vim.api.nvim_win_get_buf(winid)
+	if vim.bo[bufnr].buftype == "terminal" then
+		vim.api.nvim_set_option_value("winblend", 0, { win = winid })
+	end
 end
 
 M.apply_to_inactive_windows = function()
