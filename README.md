@@ -15,12 +15,40 @@ A Neovim plugin that automatically fades inactive windows to help you focus on w
 
 ### [lazy.nvim](https://github.com/folke/lazy.nvim)
 
+Basic installation:
+
 ```lua
 {
   "yourusername/winshade",
+  event = "VeryLazy",
+  config = function()
+    require("winshade").setup()
+  end,
+}
+```
+
+With custom configuration:
+
+```lua
+{
+  "yourusername/winshade",
+  event = "VeryLazy",
+  opts = {
+    fade_amount = 0.3,
+    excluded_filetypes = { "NvimTree", "neo-tree" },
+  },
+}
+```
+
+Or load on specific events:
+
+```lua
+{
+  "yourusername/winshade",
+  event = { "BufReadPost", "BufNewFile" },
   config = function()
     require("winshade").setup({
-      -- your configuration here
+      fade_amount = 0.4,
     })
   end,
 }
