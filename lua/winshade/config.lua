@@ -42,9 +42,12 @@ M.should_exclude_window = function(winid)
 	-- Check if floating window should be ignored
 	if M.options.ignore_floating then
 		local win_config = vim.api.nvim_win_get_config(winid)
-		local threshold = M.options.floating_zindex_threshold
-		if win_config.relative ~= "" and (win_config.zindex or threshold) > threshold then
-			return true
+		if win_config.relative ~= "" then
+			local threshold = M.options.floating_zindex_threshold
+			local zindex = win_config.zindex or 0
+			if zindex > threshold then
+				return true
+			end
 		end
 	end
 
