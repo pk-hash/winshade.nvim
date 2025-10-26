@@ -28,7 +28,7 @@ M.enable = function()
 	require("winshade.config").enabled = true
 
 	-- Use debounced version for frequent events
-	vim.api.nvim_create_autocmd({ "WinEnter", "BufWinEnter" }, {
+	vim.api.nvim_create_autocmd({ "WinEnter", "BufWinEnter", "WinNew" }, {
 		group = augroup,
 		callback = debounced_apply,
 	})
