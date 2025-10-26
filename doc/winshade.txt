@@ -8,8 +8,10 @@ CONTENTS                                                    *winshade-contents*
     3. Installation ............................ |winshade-installation|
     4. Configuration ........................... |winshade-configuration|
     5. Commands ................................ |winshade-commands|
-    6. API ..................................... |winshade-api|
-    7. License ................................. |winshade-license|
+    6. Health Check ............................ |winshade-health|
+    7. Debugging ............................... |winshade-debugging|
+    8. API ..................................... |winshade-api|
+    9. License ................................. |winshade-license|
 
 ==============================================================================
 INTRODUCTION                                            *winshade-introduction*
@@ -43,6 +45,14 @@ Setup with default options: >
       excluded_filetypes = {},
       excluded_buftypes = {},
       ignore_floating = true,
+      floating_zindex_threshold = 50,
+      debug = false,
+      debounce_ms = 10,
+      excluded_highlights = {
+        "TabLineSel", "Pmenu", "PmenuSel", "PmenuKind",
+        "PmenuKindSel", "PmenuExtra", "PmenuExtraSel",
+        "PmenuSbar", "PmenuThumb", "StatusLine",
+      },
     })
 <
 
@@ -72,6 +82,42 @@ ignore_floating                                  *winshade-ignore_floating*
 
     If true, floating windows will not be shaded.
 
+floating_zindex_threshold                  *winshade-floating_zindex_threshold*
+    Type: number
+    Default: 50
+
+    Exclude floating windows with z-index greater than this value.
+
+debug                                                      *winshade-debug*
+    Type: boolean
+    Default: false
+
+    Enable performance monitoring. When enabled, timing information is
+    printed to |:messages|.
+    Example output: "winshade: applied to 5 windows in 1.23ms"
+
+debounce_ms                                          *winshade-debounce_ms*
+    Type: number
+    Default: 10
+
+    Debounce time in milliseconds for window events. Lower values are more
+    responsive but use more CPU. Higher values reduce CPU usage but may
+    feel less responsive.
+
+excluded_highlights                          *winshade-excluded_highlights*
+    Type: table
+    Default: { "TabLineSel", "Pmenu", "PmenuSel", ... }
+
+    List of highlight groups to exclude from fading. By default, UI elements
+    like popup menus and status lines are excluded to maintain readability.
+    
+    Example to add custom exclusions: >
+        excluded_highlights = {
+          "TabLineSel", "Pmenu", "StatusLine",
+          "MyCustomHighlight",
+        }
+<
+
 ==============================================================================
 COMMANDS                                                    *winshade-commands*
 
@@ -83,6 +129,43 @@ COMMANDS                                                    *winshade-commands*
 
 :WinshadeToggle                                              *:WinshadeToggle*
     Toggle window shading on/off.
+
+==============================================================================
+HEALTH CHECK                                                  *winshade-health*
+
+Run the health check to verify installation and view current configuration: >
+    :checkhealth winshade
+<
+
+The health check will display:
+    - Neovim version compatibility
+    - Plugin enabled/disabled status
+    - Current configuration values
+    - Excluded filetypes and buftypes
+    - Floating window settings
+
+==============================================================================
+DEBUGGING                                                  *winshade-debugging*
+
+Enable debug mode to see performance metrics: >
+    require("winshade").setup({
+      debug = true,
+    })
+<
+
+When debug mode is enabled, timing information is printed to |:messages|
+every time windows are shaded. Example output: >
+    winshade: applied to 5 windows in 1.23ms
+<
+
+This is useful for:
+    - Verifying the plugin is working
+    - Identifying performance issues
+    - Debugging unexpected behavior
+
+To view messages: >
+    :messages
+<
 
 ==============================================================================
 API                                                              *winshade-api*

@@ -65,6 +65,20 @@ require("winshade").setup({
   excluded_buftypes = {},        -- Buffer types to exclude from shading
   ignore_floating = true,        -- Don't shade floating windows
   floating_zindex_threshold = 50, -- Exclude floating windows with z-index > this value
+  debug = false,                 -- Enable performance monitoring (see :messages)
+  debounce_ms = 10,              -- Debounce time for window events (milliseconds)
+  excluded_highlights = {        -- UI highlight groups to exclude from fading
+    "TabLineSel",
+    "Pmenu",
+    "PmenuSel",
+    "PmenuKind",
+    "PmenuKindSel",
+    "PmenuExtra",
+    "PmenuExtraSel",
+    "PmenuSbar",
+    "PmenuThumb",
+    "StatusLine",
+  },
 })
 ```
 
@@ -75,7 +89,27 @@ require("winshade").setup({
   fade_amount = 0.4,
   excluded_filetypes = { "NvimTree", "neo-tree", "dashboard" },
   excluded_buftypes = { "terminal" },
+  excluded_highlights = { "TabLineSel", "Pmenu", "StatusLine" }, -- Custom UI elements to exclude
 })
+```
+
+## 🩺 Health Check
+
+Run `:checkhealth winshade` to verify your installation and view current configuration.
+
+## 🐛 Debugging
+
+Enable debug mode to see performance metrics:
+
+```lua
+require("winshade").setup({
+  debug = true,
+})
+```
+
+Then check `:messages` to see timing information:
+```
+winshade: applied to 5 windows in 1.23ms
 ```
 
 ## 🎮 Commands
