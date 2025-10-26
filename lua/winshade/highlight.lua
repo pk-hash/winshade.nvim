@@ -66,7 +66,7 @@ function M.setup()
 	local bg = get_background_color()
 
 	local all_highlights = vim.api.nvim_get_hl(0, {})
-	
+
 	-- Get excluded highlights from config
 	local excluded_highlights = config.options.excluded_highlights
 
@@ -135,7 +135,10 @@ function M.apply_to_window(winid)
 	end)
 
 	if not ok then
-		vim.notify("winshade: error applying highlight - " .. tostring(err), vim.log.levels.DEBUG)
+		local bufnr = vim.api.nvim_win_is_valid(winid) and vim.api.nvim_win_get_buf(winid) or -1
+		local msg =
+			string.format("winshade: error applying highlight to window %d (buf %d) - %s", winid, bufnr, tostring(err))
+		vim.notify(msg, vim.log.levels.DEBUG)
 	end
 end
 
