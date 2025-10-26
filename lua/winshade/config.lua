@@ -7,6 +7,7 @@ local defaults = {
 	ignore_floating = true,
 	floating_zindex_threshold = 50,
 	debug = false,
+	debounce_ms = 10,
 }
 
 M.options = {}

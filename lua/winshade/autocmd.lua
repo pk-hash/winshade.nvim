@@ -9,10 +9,12 @@ local function debounced_apply()
 	if debounce_timer then
 		debounce_timer:stop()
 	end
+	local config = require("winshade.config")
+	local debounce_time = config.get("debounce_ms") or 10
 	debounce_timer = vim.defer_fn(function()
 		highlight.apply_to_inactive_windows()
 		debounce_timer = nil
-	end, 10)
+	end, debounce_time)
 end
 
 M.setup = function()
