@@ -25,6 +25,8 @@ M.enable = function()
 		augroup = vim.api.nvim_create_augroup("Winshade", { clear = true })
 	end
 
+	require("winshade.config").enabled = true
+
 	-- Use debounced version for frequent events
 	vim.api.nvim_create_autocmd({ "WinEnter", "BufWinEnter" }, {
 		group = augroup,
@@ -70,6 +72,7 @@ M.disable = function()
 	if augroup then
 		vim.api.nvim_clear_autocmds({ group = augroup })
 	end
+	require("winshade.config").enabled = false
 end
 
 return M
