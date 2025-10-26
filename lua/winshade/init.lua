@@ -1,3 +1,4 @@
+---@class winshade
 local M = {}
 
 local config = require("winshade.config")
@@ -6,7 +7,9 @@ local autocmd = require("winshade.autocmd")
 
 local setup_called = false
 
-M.setup = function(opts)
+--- Setup winshade with the given configuration
+---@param opts? winshade.Config
+function M.setup(opts)
 	if setup_called then
 		vim.notify("winshade: setup() already called, ignoring", vim.log.levels.WARN)
 		return
@@ -19,17 +22,22 @@ M.setup = function(opts)
 	M.enable()
 end
 
-M.enable = function()
+--- Enable window shading
+function M.enable()
+	config.set_enabled(true)
 	autocmd.enable()
 	highlight.apply_to_all_inactive_windows()
 end
 
-M.disable = function()
+--- Disable window shading
+function M.disable()
+	config.set_enabled(false)
 	autocmd.disable()
 	highlight.clear_all_windows()
 end
 
-M.toggle = function()
+--- Toggle window shading
+function M.toggle()
 	if config.is_enabled() then
 		M.disable()
 	else

@@ -1,33 +1,38 @@
+---@class winshade.autocmd
 local M = {}
 
+local config = require("winshade.config")
 local highlight = require("winshade.highlight")
 
+---@type number?
 local augroup = nil
+---@type table?
 local debounce_timer = nil
 
 local function debounced_apply()
 	if debounce_timer then
 		debounce_timer:stop()
 	end
-	local config = require("winshade.config")
-	local debounce_time = config.get("debounce_ms") or 10
+	local debounce_time = config.options.debounce_ms
 	debounce_timer = vim.defer_fn(function()
 		highlight.apply_to_inactive_windows()
 		debounce_timer = nil
 	end, debounce_time)
 end
 
-M.setup = function()
+--- Setup autocommands
+function M.setup()
 	augroup = vim.api.nvim_create_augroup("Winshade", { clear = true })
 	M.enable()
 end
 
-M.enable = function()
+--- Enable autocommands
+function M.enable()
 	if not augroup then
 		augroup = vim.api.nvim_create_augroup("Winshade", { clear = true })
 	end
 
-	require("winshade.config").enabled = true
+	config.set_enabled(true)
 
 	-- Use debounced version for frequent events
 	vim.api.nvim_create_autocmd({ "WinEnter", "BufWinEnter", "WinNew" }, {
@@ -66,7 +71,8 @@ M.enable = function()
 	})
 end
 
-M.disable = function()
+--- Disable autocommands
+function M.disable()
 	if debounce_timer then
 		debounce_timer:stop()
 		debounce_timer = nil
@@ -74,7 +80,7 @@ M.disable = function()
 	if augroup then
 		vim.api.nvim_clear_autocmds({ group = augroup })
 	end
-	require("winshade.config").enabled = false
+	config.set_enabled(false)
 end
 
 return M

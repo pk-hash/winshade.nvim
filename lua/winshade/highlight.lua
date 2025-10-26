@@ -1,35 +1,47 @@
+---@class winshade.highlight
 local M = {}
 
 local config = require("winshade.config")
 
 local ns_id = vim.api.nvim_create_namespace("winshade")
+---@type string?
 local last_colorscheme = nil
 
+---@param fg number
+---@param bg number
+---@param alpha number
+---@return number
 local function blend_colors(fg, bg, alpha)
 	if not fg or not bg then
 		return bg
 	end
 
-	local fg_r = bit.rshift(bit.band(fg, 0xFF0000), 16)
-	local fg_g = bit.rshift(bit.band(fg, 0x00FF00), 8)
-	local fg_b = bit.band(fg, 0x0000FF)
+	---@diagnostic disable-next-line: deprecated
+	local bitlib = vim.bit or bit
+	local fg_r = bitlib.rshift(bitlib.band(fg, 0xFF0000), 16)
+	local fg_g = bitlib.rshift(bitlib.band(fg, 0x00FF00), 8)
+	local fg_b = bitlib.band(fg, 0x0000FF)
 
-	local bg_r = bit.rshift(bit.band(bg, 0xFF0000), 16)
-	local bg_g = bit.rshift(bit.band(bg, 0x00FF00), 8)
-	local bg_b = bit.band(bg, 0x0000FF)
+	local bg_r = bitlib.rshift(bitlib.band(bg, 0xFF0000), 16)
+	local bg_g = bitlib.rshift(bitlib.band(bg, 0x00FF00), 8)
+	local bg_b = bitlib.band(bg, 0x0000FF)
 
 	local r = math.floor(fg_r * (1 - alpha) + bg_r * alpha)
 	local g = math.floor(fg_g * (1 - alpha) + bg_g * alpha)
 	local b = math.floor(fg_b * (1 - alpha) + bg_b * alpha)
 
-	return bit.bor(bit.lshift(r, 16), bit.lshift(g, 8), b)
+	return bitlib.bor(bitlib.lshift(r, 16), bitlib.lshift(g, 8), b)
 end
 
+---@param hl_name string
+---@param attr string
+---@return any
 local function get_hl_value(hl_name, attr)
 	local hl = vim.api.nvim_get_hl(0, { name = hl_name })
 	return hl[attr]
 end
 
+---@return number
 local function get_background_color()
 	local bg = get_hl_value("Normal", "bg")
 	if not bg then
@@ -42,14 +54,15 @@ local function get_background_color()
 	return bg
 end
 
-M.setup = function()
+--- Setup highlight groups based on current colorscheme
+function M.setup()
 	local current = vim.g.colors_name
 	if current == last_colorscheme then
 		return
 	end
 	last_colorscheme = current
 
-	local fade_amount = config.get("fade_amount")
+	local fade_amount = config.options.fade_amount
 	local bg = get_background_color()
 
 	local all_highlights = vim.api.nvim_get_hl(0, {})
@@ -104,9 +117,12 @@ M.setup = function()
 	end
 end
 
+---@type table<number, number>
 local terminal_matches = {}
 
-M.apply_to_window = function(winid)
+--- Apply shading to a specific window
+---@param winid number
+function M.apply_to_window(winid)
 	if not vim.api.nvim_win_is_valid(winid) then
 		return
 	end
@@ -122,6 +138,7 @@ M.apply_to_window = function(winid)
 		local bufnr = vim.api.nvim_win_get_buf(winid)
 		if vim.bo[bufnr].buftype == "terminal" then
 			if not terminal_matches[winid] then
+				---@diagnostic disable-next-line: param-type-mismatch
 				terminal_matches[winid] = vim.fn.matchadd("Normal", ".*", 0, -1, { window = winid })
 			end
 		end
@@ -132,7 +149,9 @@ M.apply_to_window = function(winid)
 	end
 end
 
-M.clear_window = function(winid)
+--- Clear shading from a specific window
+---@param winid number
+function M.clear_window(winid)
 	if not vim.api.nvim_win_is_valid(winid) then
 		-- Clean up terminal match tracking for invalid windows
 		terminal_matches[winid] = nil
@@ -148,15 +167,19 @@ M.clear_window = function(winid)
 	end
 end
 
-M.cleanup_window = function(winid)
+--- Cleanup tracking for a window
+---@param winid number
+function M.cleanup_window(winid)
 	if terminal_matches[winid] then
 		terminal_matches[winid] = nil
 	end
 end
 
+---@type number?
 local last_active_win = nil
 
-M.apply_to_inactive_windows = function()
+--- Apply shading to all inactive windows (optimized for window switching)
+function M.apply_to_inactive_windows()
 	local current_win = vim.api.nvim_get_current_win()
 
 	-- Clear the previously active window
@@ -170,8 +193,11 @@ M.apply_to_inactive_windows = function()
 	last_active_win = current_win
 end
 
-M.apply_to_all_inactive_windows = function()
-	local start = config.get("debug") and vim.loop.hrtime() or nil
+--- Apply shading to all inactive windows (full refresh)
+function M.apply_to_all_inactive_windows()
+	---@diagnostic disable-next-line: deprecated
+	local uv = vim.uv or vim.loop
+	local start = config.options.debug and uv.hrtime() or nil
 
 	local current_win = vim.api.nvim_get_current_win()
 	local wins = vim.api.nvim_list_wins()
@@ -187,12 +213,13 @@ M.apply_to_all_inactive_windows = function()
 	last_active_win = current_win
 
 	if start then
-		local elapsed = (vim.loop.hrtime() - start) / 1e6
+		local elapsed = (uv.hrtime() - start) / 1e6
 		print(string.format("winshade: applied to %d windows in %.2fms", #wins, elapsed))
 	end
 end
 
-M.clear_all_windows = function()
+--- Clear shading from all windows
+function M.clear_all_windows()
 	local wins = vim.api.nvim_list_wins()
 	for _, winid in ipairs(wins) do
 		M.clear_window(winid)
