@@ -111,18 +111,24 @@ M.apply_to_window = function(winid)
 		return
 	end
 
-	if config.should_exclude_window(winid) then
-		return
-	end
-
-	vim.api.nvim_win_set_hl_ns(winid, ns_id)
-
-	-- Apply to terminal windows using matchadd overlay
-	local bufnr = vim.api.nvim_win_get_buf(winid)
-	if vim.bo[bufnr].buftype == "terminal" then
-		if not terminal_matches[winid] then
-			terminal_matches[winid] = vim.fn.matchadd("Normal", ".*", 0, -1, { window = winid })
+	local ok, err = pcall(function()
+		if config.should_exclude_window(winid) then
+			return
 		end
+
+		vim.api.nvim_win_set_hl_ns(winid, ns_id)
+
+		-- Apply to terminal windows using matchadd overlay
+		local bufnr = vim.api.nvim_win_get_buf(winid)
+		if vim.bo[bufnr].buftype == "terminal" then
+			if not terminal_matches[winid] then
+				terminal_matches[winid] = vim.fn.matchadd("Normal", ".*", 0, -1, { window = winid })
+			end
+		end
+	end)
+
+	if not ok then
+		vim.notify("winshade: error applying highlight - " .. tostring(err), vim.log.levels.DEBUG)
 	end
 end
 
