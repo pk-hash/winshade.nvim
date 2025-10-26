@@ -43,9 +43,14 @@ function M.enable()
 	config.set_enabled(true)
 
 	-- Use debounced version for frequent events
-	vim.api.nvim_create_autocmd({ "WinEnter", "BufWinEnter", "WinNew" }, {
+	vim.api.nvim_create_autocmd({ "WinEnter", "BufWinEnter" }, {
 		group = augroup,
-		callback = debounced_apply,
+		callback = function(args)
+			if config.options.debug then
+				vim.notify(string.format("DEBUG: %s", args.event), vim.log.levels.DEBUG)
+			end
+			debounced_apply()
+		end,
 	})
 
 	-- FocusGained should apply to all windows immediately
@@ -68,13 +73,16 @@ function M.enable()
 		end,
 	})
 
-	vim.api.nvim_create_autocmd("WinClosed", {
+	vim.api.nvim_create_autocmd({ "WinClosed", "TermClose" }, {
 		group = augroup,
 		callback = function(args)
 			local winid = tonumber(args.match)
 			if winid then
 				highlight.cleanup_window(winid)
 			end
+			vim.schedule(function()
+				highlight.apply_to_all_inactive_windows()
+			end)
 		end,
 	})
 

@@ -207,7 +207,7 @@ function M.apply_to_all_inactive_windows()
 
 	if start then
 		local elapsed = (uv.hrtime() - start) / 1e6
-		print(string.format("winshade: applied to %d windows in %.2fms", #wins, elapsed))
+		vim.notify(string.format("winshade: applied to %d windows in %.2fms", #wins, elapsed), vim.log.levels.DEBUG)
 	end
 end
 
