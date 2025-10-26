@@ -3,6 +3,7 @@ local M = {}
 local config = require("winshade.config")
 
 local ns_id = vim.api.nvim_create_namespace("winshade")
+local last_colorscheme = nil
 
 local function blend_colors(fg, bg, alpha)
 	if not fg or not bg then
@@ -42,6 +43,12 @@ local function get_background_color()
 end
 
 M.setup = function()
+	local current = vim.g.colors_name
+	if current == last_colorscheme then
+		return
+	end
+	last_colorscheme = current
+
 	local fade_amount = config.get("fade_amount")
 	local bg = get_background_color()
 
@@ -145,15 +152,15 @@ local last_active_win = nil
 
 M.apply_to_inactive_windows = function()
 	local current_win = vim.api.nvim_get_current_win()
-	
+
 	-- Clear the previously active window
 	if last_active_win and last_active_win ~= current_win and vim.api.nvim_win_is_valid(last_active_win) then
 		M.apply_to_window(last_active_win)
 	end
-	
+
 	-- Clear the newly active window
 	M.clear_window(current_win)
-	
+
 	last_active_win = current_win
 end
 
@@ -168,7 +175,7 @@ M.apply_to_all_inactive_windows = function()
 			M.clear_window(winid)
 		end
 	end
-	
+
 	last_active_win = current_win
 end
 
