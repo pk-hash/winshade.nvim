@@ -136,6 +136,17 @@ winshade.toggle()
 
 - Neovim >= 0.8.0
 
+## 🧪 Testing
+
+This plugin includes automated tests using [plenary.nvim](https://github.com/nvim-lua/plenary.nvim).
+
+To run tests:
+```bash
+make test
+```
+
+See [tests/README.md](tests/README.md) for more information.
+
 ## 📝 License
 
 MIT
