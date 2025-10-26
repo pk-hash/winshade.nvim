@@ -4,7 +4,15 @@ local config = require("winshade.config")
 local highlight = require("winshade.highlight")
 local autocmd = require("winshade.autocmd")
 
+local setup_called = false
+
 M.setup = function(opts)
+	if setup_called then
+		vim.notify("winshade: setup() already called, ignoring", vim.log.levels.WARN)
+		return
+	end
+	setup_called = true
+
 	config.setup(opts or {})
 	highlight.setup()
 	autocmd.setup()
