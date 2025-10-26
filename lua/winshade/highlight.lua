@@ -66,19 +66,9 @@ function M.setup()
 	local bg = get_background_color()
 
 	local all_highlights = vim.api.nvim_get_hl(0, {})
-
-	local excluded_highlights = {
-		"TabLineSel",
-		"Pmenu",
-		"PmenuSel",
-		"PmenuKind",
-		"PmenuKindSel",
-		"PmenuExtra",
-		"PmenuExtraSel",
-		"PmenuSbar",
-		"PmenuThumb",
-		"StatusLine",
-	}
+	
+	-- Get excluded highlights from config
+	local excluded_highlights = config.options.excluded_highlights
 
 	for hl_name, hl_def in pairs(all_highlights) do
 		if

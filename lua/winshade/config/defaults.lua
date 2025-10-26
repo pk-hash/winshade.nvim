@@ -9,6 +9,7 @@ local M = {}
 ---@field floating_zindex_threshold? number Threshold for floating window z-index. Default: 50
 ---@field debug? boolean Enable debug mode. Default: false
 ---@field debounce_ms? number Debounce time in milliseconds for window changes. Default: 10
+---@field excluded_highlights? string[] Additional highlight groups to exclude from fading
 
 --- Resolved configuration (all fields guaranteed to exist after setup)
 ---@class winshade.ResolvedConfig
@@ -19,6 +20,7 @@ local M = {}
 ---@field floating_zindex_threshold number Threshold for floating window z-index
 ---@field debug boolean Enable debug mode
 ---@field debounce_ms number Debounce time in milliseconds for window changes
+---@field excluded_highlights string[] List of highlight groups to exclude from fading
 
 ---@type winshade.ResolvedConfig
 local defaults = {
@@ -29,6 +31,18 @@ local defaults = {
 	floating_zindex_threshold = 50,
 	debug = false,
 	debounce_ms = 10,
+	excluded_highlights = {
+		"TabLineSel",
+		"Pmenu",
+		"PmenuSel",
+		"PmenuKind",
+		"PmenuKindSel",
+		"PmenuExtra",
+		"PmenuExtraSel",
+		"PmenuSbar",
+		"PmenuThumb",
+		"StatusLine",
+	},
 }
 
 M.defaults = defaults
