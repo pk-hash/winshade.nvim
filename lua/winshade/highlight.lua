@@ -135,6 +135,12 @@ M.clear_window = function(winid)
 	end
 end
 
+M.cleanup_window = function(winid)
+	if terminal_matches[winid] then
+		terminal_matches[winid] = nil
+	end
+end
+
 local last_active_win = nil
 
 M.apply_to_inactive_windows = function()

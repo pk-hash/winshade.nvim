@@ -50,6 +50,16 @@ M.enable = function()
 			end)
 		end,
 	})
+
+	vim.api.nvim_create_autocmd("WinClosed", {
+		group = augroup,
+		callback = function(args)
+			local winid = tonumber(args.match)
+			if winid then
+				highlight.cleanup_window(winid)
+			end
+		end,
+	})
 end
 
 M.disable = function()
