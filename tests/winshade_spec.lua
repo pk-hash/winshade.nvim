@@ -83,6 +83,47 @@ describe("winshade", function()
 			ws.toggle()
 			assert.equals(initial_state, cfg.is_enabled())
 		end)
+
+		it("registers autocmds on setup", function()
+			require("winshade").setup()
+			
+			local autocmds = vim.api.nvim_get_autocmds({ group = "Winshade" })
+			assert.is_true(#autocmds > 0, "Should have autocmds after setup")
+		end)
+
+		it("clears autocmds on disable", function()
+			require("winshade").setup()
+			require("winshade").disable()
+			
+			local autocmds = vim.api.nvim_get_autocmds({ group = "Winshade" })
+			assert.equals(0, #autocmds, "Should have no autocmds after disable")
+		end)
+
+		it("re-registers autocmds after disable then enable", function()
+			require("winshade").setup()
+			require("winshade").disable()
+			require("winshade").enable()
+			
+			local autocmds = vim.api.nvim_get_autocmds({ group = "Winshade" })
+			assert.is_true(#autocmds > 0, "Should have autocmds after re-enable")
+		end)
+
+		it("prevents duplicate autocmd registration on multiple enables", function()
+			require("winshade").setup()
+			
+			local autocmds_before = vim.api.nvim_get_autocmds({ group = "Winshade" })
+			local count_before = #autocmds_before
+			
+			-- Call enable multiple times
+			require("winshade").enable()
+			require("winshade").enable()
+			require("winshade").enable()
+			
+			local autocmds_after = vim.api.nvim_get_autocmds({ group = "Winshade" })
+			local count_after = #autocmds_after
+			
+			assert.equals(count_before, count_after, "Should have same number of autocmds")
+		end)
 	end)
 
 	describe("config", function()

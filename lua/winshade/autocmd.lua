@@ -8,6 +8,8 @@ local highlight = require("winshade.highlight")
 local augroup = nil
 ---@type table?
 local debounce_timer = nil
+---@type boolean
+local autocmds_registered = false
 
 local function debounced_apply()
 	if debounce_timer then
@@ -28,8 +30,14 @@ end
 
 --- Enable autocommands
 function M.enable()
+	if autocmds_registered and config.is_enabled() then
+		return -- Already enabled
+	end
+
 	if not augroup then
 		augroup = vim.api.nvim_create_augroup("Winshade", { clear = true })
+	else
+		vim.api.nvim_clear_autocmds({ group = augroup })
 	end
 
 	config.set_enabled(true)
@@ -69,6 +77,8 @@ function M.enable()
 			end
 		end,
 	})
+
+	autocmds_registered = true
 end
 
 --- Disable autocommands
@@ -80,6 +90,7 @@ function M.disable()
 	if augroup then
 		vim.api.nvim_clear_autocmds({ group = augroup })
 	end
+	autocmds_registered = false
 	config.set_enabled(false)
 end
 

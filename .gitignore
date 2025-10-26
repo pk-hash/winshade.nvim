@@ -11,5 +11,5 @@ tags
 tags.lock
 tags.temp
 
-.tests
 .tests/
+CODE_REVIEW.md
