@@ -171,6 +171,8 @@ M.apply_to_inactive_windows = function()
 end
 
 M.apply_to_all_inactive_windows = function()
+	local start = config.get("debug") and vim.loop.hrtime() or nil
+
 	local current_win = vim.api.nvim_get_current_win()
 	local wins = vim.api.nvim_list_wins()
 
@@ -183,6 +185,11 @@ M.apply_to_all_inactive_windows = function()
 	end
 
 	last_active_win = current_win
+
+	if start then
+		local elapsed = (vim.loop.hrtime() - start) / 1e6
+		print(string.format("winshade: applied to %d windows in %.2fms", #wins, elapsed))
+	end
 end
 
 M.clear_all_windows = function()

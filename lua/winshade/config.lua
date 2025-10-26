@@ -6,6 +6,7 @@ local defaults = {
 	excluded_buftypes = {},
 	ignore_floating = true,
 	floating_zindex_threshold = 50,
+	debug = false,
 }
 
 M.options = {}
