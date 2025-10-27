@@ -73,7 +73,7 @@ function M.enable()
 		end,
 	})
 
-	vim.api.nvim_create_autocmd({ "WinClosed", "TermClose" }, {
+	vim.api.nvim_create_autocmd({ "TermClose" }, {
 		group = augroup,
 		callback = function(args)
 			local winid = tonumber(args.match)
