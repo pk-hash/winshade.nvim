@@ -93,7 +93,7 @@ debug                                                      *winshade-debug*
     Default: false
 
     Enable performance monitoring. When enabled, timing information is
-    printed to |:messages|.
+    displayed as notifications.
     Example output: "winshade: applied to 5 windows in 1.23ms"
 
 debounce_ms                                          *winshade-debounce_ms*
@@ -153,7 +153,7 @@ Enable debug mode to see performance metrics: >
     })
 <
 
-When debug mode is enabled, timing information is printed to |:messages|
+When debug mode is enabled, timing information is displayed as notifications
 every time windows are shaded. Example output: >
     winshade: applied to 5 windows in 1.23ms
 <
@@ -162,10 +162,6 @@ This is useful for:
     - Verifying the plugin is working
     - Identifying performance issues
     - Debugging unexpected behavior
-
-To view messages: >
-    :messages
-<
 
 ==============================================================================
 API                                                              *winshade-api*

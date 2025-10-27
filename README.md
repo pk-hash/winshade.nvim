@@ -65,7 +65,7 @@ require("winshade").setup({
   excluded_buftypes = {},        -- Buffer types to exclude from shading
   ignore_floating = true,        -- Don't shade floating windows
   floating_zindex_threshold = 50, -- Exclude floating windows with z-index > this value
-  debug = false,                 -- Enable performance monitoring (see :messages)
+  debug = false,                 -- Enable performance monitoring
   debounce_ms = 10,              -- Debounce time for window events (milliseconds)
   excluded_highlights = {        -- UI highlight groups to exclude from fading
     "TabLineSel",
@@ -99,7 +99,7 @@ Run `:checkhealth winshade` to verify your installation and view current configu
 
 ## 🐛 Debugging
 
-Enable debug mode to see performance metrics:
+Enable debug mode to see performance metrics as notifications:
 
 ```lua
 require("winshade").setup({
@@ -107,7 +107,7 @@ require("winshade").setup({
 })
 ```
 
-Then check `:messages` to see timing information:
+You'll see timing information displayed as notifications:
 ```
 winshade: applied to 5 windows in 1.23ms
 ```
@@ -138,7 +138,7 @@ winshade.toggle()
 
 ## 🧪 Testing
 
-This plugin includes automated tests using [plenary.nvim](https://github.com/nvim-lua/plenary.nvim).
+This plugin includes automated tests.
 
 To run tests:
 ```bash
